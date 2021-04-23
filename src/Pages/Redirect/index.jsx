@@ -7,14 +7,16 @@ import ContactList from '../ContactList';
 import { connect } from 'react-redux';
 import * as actions from '../../Redux/Actions/Auth';
 
-const Redirect = ({ history, location, Auth, getLoginTokens }) => {
+const Redirect = ({ location, Auth, getLoginTokens, getNewToken }) => {
   useEffect(() => {
     const code = location.search.substring(1).split('&')[0];
-    console.log('code after trim', code.substring(5));
-    console.log('auth', Auth)
     getLoginTokens(code.substring(5))
-    console.log('history and location', history, location);
-}, [location]);
+    const id = Auth.value.data.id;
+    const uuid = Auth.value.data.uuid;
+    if(id) {
+      getNewToken(uuid);
+    }
+}, [Auth]);
 
   return (
   <>
@@ -32,5 +34,6 @@ export default connect(
   }),
   {
     getLoginTokens: actions.getLoginTokens,
+    getNewToken: actions.getNewToken,
   },
 )(Auth);

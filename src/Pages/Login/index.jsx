@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-console */
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
@@ -37,7 +36,6 @@ const ShowList = ({ Auth, getAccounts }) => {
   const classes = useStyles();
 
   const handleChooseAccount = () => {
-    console.log('redirecting to', Auth.data)
     window.location.replace(Auth.data)
   };
 
@@ -58,7 +56,7 @@ const ShowList = ({ Auth, getAccounts }) => {
       <Grid item xs={12} sm={6} md={6} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Button variant="outlined" color="primary" onClick={handleChooseAccount}>
-            Login Uisng Google
+            Login Using Google
           </Button>
           <br />
           <Copyright />

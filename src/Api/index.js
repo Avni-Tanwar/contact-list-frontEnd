@@ -6,16 +6,13 @@ export function getAccountsApi() {
 }
 
 export async function getLoginTokensApi(payload) {
-  const data = await axios.post('http://localhost:3001/users/logintokens', {
-    "code": payload.value,
-    "type": 'people',
-  });
+  const body = { code: payload.value, type:'people' }
+  const data = await axios.post('http://localhost:3001/users/logintokens', body);
   console.log('data retrived', data)
   return data;
 }
 
 export function getNewTokensApi(value) {
-  console.log('fetching data');
   const data = axios.post('http://localhost:3001/users/newtoken', {
     uuid: value.uuid,
     id: value.id
@@ -37,6 +34,9 @@ export function getContactsApi(value) {
   return data;
 }
 
-export function logoutUserApi() {
-  return axios.post('/api/users/logout');
+export async function logoutUserApi(value) {
+  const data = await axios.post('http://localhost:3001/users/logout', {
+    "uuid": value.uuid
+  });
+  return data;
 }

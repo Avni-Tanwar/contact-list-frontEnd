@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import {
-  LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT, CLEAR_STORE, SET_AUTH,
+  LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT, SET_AUTH,
 } from '../Constants/Auth';
 
 const initialState = {
@@ -20,7 +20,6 @@ const Auth = (state = initialState.Auth, { type, value }) => {
       return 'Login failed';
 
     case LOGOUT:
-    case CLEAR_STORE:
       return initialState.Auth;
 
     default:

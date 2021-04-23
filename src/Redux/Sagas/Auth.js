@@ -1,32 +1,52 @@
 /* eslint-disable no-unused-vars */
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
+import MuiAlert from '@material-ui/lab/Alert';
 import {
   LOGOUT, GET_ACCOUNTS_API, GET_LOGIN_TOKEN,
 } from '../Constants/Auth';
-import { setAuth, removeProfile, setProfile } from '../Actions/Auth';
-import { getAccountsApi, getLoginTokensApi, logoutUserApi } from '../../Api';
+import { setAuth, removeProfile, setProfile, setError, setToken } from '../Actions/Auth';
+import { getAccountsApi, getLoginTokensApi, logoutUserApi, getNewTokensApi } from '../../Api';
 
 export function* getLoginAccounts() {
-  const response = yield call(getAccountsApi);
-  console.log('response');
-  yield put(setAuth(response.data));
+  try {
+    const response = yield call(getAccountsApi);
+    yield put(setAuth(response.data));
+  } catch(error) {
+    yield toast.error('get account api Fetch Error');
+  }
 }
 
 export function* getLoginDetails(value) {
   try {
-    const response = yield call(getLoginTokensApi(value));
-    console.log('response',response);
-    yield put(setProfile(response));
+    const response = yield call(getLoginTokensApi, value );
+    yield put(setProfile(response.data));
   } catch(error) {
-    console.log('error');
     yield toast.error('Data Fetch Error');
+    yield put(setError(error));
   }
 }
 
-export function* logoutApi() {
-  const response = yield call(logoutUserApi);
-  yield put(removeProfile);
+export function* getNewToken(value) {
+  try {
+    const response = yield call(getNewTokensApi, value );
+    yield put(setToken(response.data));
+  } catch(error) {
+    yield toast.error('Token Fetch Error');
+    yield put(setError(error));
+  }
+}
+
+export function* logoutApi(value) {
+  try {
+    const response = yield call(logoutUserApi, value );
+    console.log('logout',response);
+    yield put(removeProfile);
+  } catch(error) {
+    <MuiAlert elevation={6} variant="filled" severity="error"> Error!!!!</MuiAlert>
+    yield toast.error('Data Fetch Error');
+    yield put(setError(error));
+  }
 }
 
 export function* watchLoginApi() {

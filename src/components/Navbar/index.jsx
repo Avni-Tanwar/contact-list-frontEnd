@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -55,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -83,7 +81,8 @@ const Navbar = ({ Auth, handleSearch }) => {
   console.log('navbar profile', Auth);
 
   useEffect(() => {
-    if (Auth) {
+    if (Auth.value) {
+      console.log('Auth navbar', Auth.value.data.id);
       setLoggedIn(true);
     }
   }, [Auth]);
@@ -137,7 +136,7 @@ const Navbar = ({ Auth, handleSearch }) => {
             </IconButton>
           </div>
           <div className={classes.sectionDesktop} style={{ margin: '20px' }}>
-            {loggedIn ? <Avatar src={Auth} /> : ''}
+            {loggedIn ? <Avatar src={Auth?.value?.data?.picture} /> : ''}
           </div>
         </Toolbar>
       </AppBar>
@@ -145,6 +144,8 @@ const Navbar = ({ Auth, handleSearch }) => {
   );
 };
 
-const mapStateToProps = (state) => ({ Auth: state.profile });
-
-export default connect(mapStateToProps)(Navbar);
+export default connect(
+  ({ Auth }) => ({
+    Auth,
+  }),
+)(Navbar);
