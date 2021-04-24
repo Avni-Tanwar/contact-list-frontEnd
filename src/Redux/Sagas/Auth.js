@@ -3,14 +3,15 @@ import { toast } from 'react-toastify';
 import {
   LOGOUT, GET_ACCOUNTS_API, GET_LOGIN_TOKEN, GET_NEW_TOKEN
 } from '../Constants/Auth';
-import { setAuth, removeProfile, setProfile, setError, setToken } from '../Actions/Auth';
+import { removeProfile, setProfile, setError, setToken, setAccounts } from '../Actions/Auth';
 import { getAccountsApi, getLoginTokensApi, logoutUserApi, getNewTokenApi } from '../../Api';
 import { removeContacts } from '../Actions/Contacts';
+import { removeComments } from '../Actions/Comments';
 
 export function* getLoginAccounts() {
   try {
     const response = yield call(getAccountsApi);
-    yield put(setAuth(response.data));
+    yield put(setAccounts(response.data));
   } catch(error) {
     yield toast.error('get account api Fetch Error');
   }
@@ -19,6 +20,7 @@ export function* getLoginAccounts() {
 export function* getLoginDetails(value) {
   try {
     const response = yield call(getLoginTokensApi, value );
+    console.log('profile details sags', response)
     yield put(setProfile(response.data));
   } catch(error) {
     yield toast.error('Data Fetch Error');
@@ -42,6 +44,7 @@ export function* logoutApi(value) {
     console.log('logout',response);
     yield put(removeProfile);
     yield put (removeContacts);
+    yield put (removeComments);
   } catch(error) {
     yield toast.error('Logout Error');
     yield put(setError(error));

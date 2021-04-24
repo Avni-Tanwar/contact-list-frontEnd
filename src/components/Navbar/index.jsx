@@ -78,11 +78,11 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = ({ Auth, handleSearch }) => {
   const classes = useStyles();
   const [loggedIn, setLoggedIn] = useState(false);
-  console.log('navbar profile', Auth);
+  console.log('Navbar Auth value', Auth);
 
   useEffect(() => {
-    if (Auth.value) {
-      console.log('Auth navbar', Auth.value.data.id);
+    if (Auth.value?.data?.id) {
+      console.log('profile id', Auth.value.data.id);
       setLoggedIn(true);
     }
   }, [Auth]);
@@ -118,14 +118,6 @@ const Navbar = ({ Auth, handleSearch }) => {
             </div>
           )}
           <div className={classes.grow} />
-          <div>
-            <IconButton
-              edge="end"
-              color="default"
-            >
-              <Link to="/contact-list" style={{ color: 'white' }}>List</Link>
-            </IconButton>
-          </div>
 
           <div>
             <IconButton
