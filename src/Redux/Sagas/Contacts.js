@@ -9,15 +9,15 @@ import { setContacts, setIsLoading } from '../Actions/Contacts';
 import { getContactsApi } from '../../Api';
 
 export function* getContactsList(value) {
-  yield put(setIsLoading(true));
+  yield put(setIsLoading({ loading:true }));
   try {
     const response = yield call(getContactsApi, value);
-    yield put(setContacts(response));
+    yield put(setContacts(response.data));
   } catch (error) {
     console.log('error');
     yield toast.error('Contacts Fetch Error');
   }
-  yield put(setIsLoading(false));
+  yield put(setIsLoading({ loading:false }));
 }
 
 export function* watchContactsApi() {

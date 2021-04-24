@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import {
   LOGOUT, GET_ACCOUNTS_API, GET_LOGIN_TOKEN, GET_NEW_TOKEN
 } from '../Constants/Auth';
-import { removeProfile, setProfile, setError, setToken, setAccounts } from '../Actions/Auth';
+import { clearStore, setProfile, setError, setToken, setAccounts } from '../Actions/Auth';
 import { getAccountsApi, getLoginTokensApi, logoutUserApi, getNewTokenApi } from '../../Api';
 import { removeContacts } from '../Actions/Contacts';
 import { removeComments } from '../Actions/Comments';
@@ -42,7 +42,7 @@ export function* logoutApi(value) {
   try {
     const response = yield call(logoutUserApi, value );
     console.log('logout',response);
-    yield put(removeProfile);
+    yield put(clearStore);
     yield put (removeContacts);
     yield put (removeComments);
   } catch(error) {

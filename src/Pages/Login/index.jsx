@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ShowList = ({ Auth, getAccounts }) => {
+const Login = ({ Auth, getAccounts }) => {
   const classes = useStyles();
 
   const handleChooseAccount = () => {
@@ -73,4 +73,4 @@ export default connect(
   {
     getAccounts: actions.getAccounts,
   },
-)(ShowList);
+)(Login);

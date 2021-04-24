@@ -8,47 +8,47 @@ export function getAccountsApi() {
 export async function getLoginTokensApi(payload) {
   const body = { code: payload.value, type:'people' }
   const data = await axios.post('http://localhost:3001/users/logintokens', body);
-  console.log('data retrived', data)
   return data;
 }
 
-export async function getNewTokenApi(value) {
+export async function getNewTokenApi(payload) {
   const data = await axios.post('http://localhost:3001/users/newtoken', {
-    uuid: value.uuid,
-    id: value.id
+    uuid: payload.value.uuid,
+    id: payload.value.id
   });
   console.log('data:', data)
   return data;
 }
 
-export async function getContactsApi(value) {
+export async function getContactsApi(payload) {
+  console.log('value', payload)
   let config = {
     headers: {
-      'Authorization': 'Bearer ' + value.token
+      'Authorization': 'Bearer ' + payload.value.token
     }
   }
   const data = await axios.post('http://localhost:3001/contacts', {
-    uuid: value.uuid,
-    page: value.page
+    uuid: payload.value.uuid,
+    page: payload.value.page
   }, config );
   return data;
 }
 
-export async function getCommentsApi(value) {
+export async function getCommentsApi(payload) {
   let config = {
     headers: {
-      'Authorization': 'Bearer ' + value.token
+      'Authorization': 'Bearer ' + payload.value.token
     }
   }
   const data = await axios.post('http://localhost:3001/comments', {
-    id: value.id,
+    id: payload.value.id,
   }, config );
   return data;
 }
 
-export async function logoutUserApi(value) {
+export async function logoutUserApi(payload) {
   const data = await axios.post('http://localhost:3001/users/logout', {
-    "uuid": value.uuid
+    "uuid": payload.value.uuid
   });
   return data;
 }

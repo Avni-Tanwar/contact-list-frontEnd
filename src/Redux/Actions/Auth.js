@@ -1,5 +1,5 @@
 import {
-  GET_ACCOUNTS_API, LOGOUT, GET_LOGIN_TOKEN, SET_ACCOUNTS, LOGIN_SUCCESS, LOGIN_FAIL, GET_NEW_TOKEN, SET_REFRESH_TOKEN
+  GET_ACCOUNTS_API, LOGOUT, GET_LOGIN_TOKEN, SET_ACCOUNTS, LOGIN_SUCCESS, LOGIN_FAIL, GET_NEW_TOKEN, SET_REFRESH_TOKEN, CLEAR_STORE
 } from '../Constants/Auth';
 
 export const getLoginTokens = (value) => ({
@@ -36,6 +36,11 @@ export const setError = (value) => ({
   value,
 });
 
-export const removeProfile = () => ({
+export const removeProfile = (value) => ({
   type: LOGOUT,
+  value
+});
+
+export const clearStore = () => ({
+  type: CLEAR_STORE,
 });

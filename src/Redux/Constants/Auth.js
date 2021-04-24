@@ -6,4 +6,5 @@ export const SET_ACCOUNTS = 'SET_ACCOUNTS';
 export const GET_LOGIN_TOKEN = 'GET_LOGIN_TOKEN';
 export const GET_NEW_TOKEN = 'GET_NEW_TOKEN';
 export const SET_REFRESH_TOKEN = 'SET_TOKEN';
+export const CLEAR_STORE = 'CLEAR_STORE'
 

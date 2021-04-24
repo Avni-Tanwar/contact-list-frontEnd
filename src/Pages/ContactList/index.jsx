@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-/* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,96 +15,11 @@ import Button from '@material-ui/core/Button';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import * as ContactActions from '../../Redux/Actions/Contacts';
 import * as CommentActions from '../../Redux/Actions/Comments';
-
-const contactsList = [
-  {
-    id: 1,
-    name: 'avni',
-    email: 'avnitanwar@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 2,
-    name: 'nitya',
-    email: 'nityatanwar@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 3,
-    name: 'vansh',
-    email: 'vansh@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 1,
-    name: 'avni',
-    email: 'avnitanwar@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 2,
-    name: 'nitya',
-    email: 'nityatanwar@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 3,
-    name: 'vansh',
-    email: 'vansh@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 1,
-    name: 'avni',
-    email: 'avnitanwar@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 2,
-    name: 'nitya',
-    email: 'nityatanwar@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 3,
-    name: 'vansh',
-    email: 'vansh@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 1,
-    name: 'avni',
-    email: 'avnitanwar@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 2,
-    name: 'nitya',
-    email: 'nityatanwar@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-  {
-    id: 3,
-    name: 'vansh',
-    email: 'vansh@gmail.com',
-    phoneNo: '75508505855',
-    title: '',
-  },
-
-];
 
 const useStyles = makeStyles({
   root: {
@@ -128,7 +41,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ContactList = ({ contacts, getContacts, search, Auth }) => {
+const ContactList = ({ Contacts, getContacts, search, Auth, Comments, getComments }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -138,9 +51,12 @@ const ContactList = ({ contacts, getContacts, search, Auth }) => {
 
   useEffect(() => {
     const uuid = Auth?.value?.data?.uuid;
-    getContacts(uuid);
-    console.log('contacts in list component', contacts);
-  }, []);
+    const token = Auth?.value?.data?.token;
+    const page = 1;
+    getContacts({ uuid: uuid, page: page, token: token });
+    setIsLoading(Contacts?.loading);
+    
+  }, [Auth]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -152,19 +68,24 @@ const ContactList = ({ contacts, getContacts, search, Auth }) => {
   };
 
   const handleComment = (event) => {
-    console.log('comment event', event);
     setShowComments(true);
+    //const token = Auth?.value?.data?.token;
+    // call comments api
+    // getComments({ token: token });
+    // display comments when loaded in modal 
   };
 
   const handleClose = () => {
     setShowComments(false);
   };
 
-  const items = contactsList.filter((result) => {
+  const contactsList = Contacts?.data;
+
+  const items = contactsList?.filter((result) => {
     if (search === null) {
       return result;
     }
-    return result?.name?.toLowerCase().includes(search.toLowerCase()) || result?.email?.toLowerCase().includes(search.toLowerCase()) || result?.phoneNo?.includes(search);
+    return result?.name?.toLowerCase().includes(search.toLowerCase()) || result?.email?.toLowerCase().includes(search.toLowerCase()) || result?.phone?.includes(search);
   }).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((result) => (
     <TableRow hover role="checkbox" tabIndex={-1}>
       <TableCell scope="row" align="justify">
@@ -179,12 +100,12 @@ const ContactList = ({ contacts, getContacts, search, Auth }) => {
       </TableCell>
       <TableCell scope="row" align="justify">
         <Typography style={{ display: 'inline-block' }} color="textSecondary">
-          {result.phoneNo}
+          {result.phone}
         </Typography>
       </TableCell>
       <TableCell scope="row" align="justify">
         <Typography style={{ display: 'inline-block' }} color="textSecondary">
-          {result.title}
+          {result.accid}
         </Typography>
       </TableCell>
       <TableCell scope="row" align="justify">
@@ -204,7 +125,7 @@ const ContactList = ({ contacts, getContacts, search, Auth }) => {
   return (
     <>
       { isLoading
-        ? <div> loading.....</div>
+        ? <div><CircularProgress /></div>
         : <><Paper className={classes.root}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label="sticky table">
@@ -213,7 +134,7 @@ const ContactList = ({ contacts, getContacts, search, Auth }) => {
                     <TableCell align="justify" style={{ minWidth: '50px' }}>Name</TableCell>
                     <TableCell align="justify" style={{ minWidth: '50px' }}>Email</TableCell>
                     <TableCell align="justify" style={{ minWidth: '50px' }}>Phone Number</TableCell>
-                    <TableCell align="justify" style={{ minWidth: '50px' }}>Title</TableCell>
+                    <TableCell align="justify" style={{ minWidth: '50px' }}>Account ID</TableCell>
                     <TableCell align="justify" style={{ minWidth: '50px' }}> </TableCell>
                   </TableRow>
                 </TableHead>
@@ -225,7 +146,7 @@ const ContactList = ({ contacts, getContacts, search, Auth }) => {
             <TablePagination
               rowsPerPageOptions={[10, 15, 25, 100]}
               component="div"
-              count={contactsList.length}
+              count={contactsList?.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onChangePage={handleChangePage}
@@ -247,8 +168,18 @@ const ContactList = ({ contacts, getContacts, search, Auth }) => {
                 }}
               >
                 <Fade in={showComments}>
-                  <div className={classes.paper}>
+                  <div className={classes.paper} style={{ margin:"20px" }}>
                     <h2 id="transition-modal-title">showing list of comments</h2>
+                    <FormControl variant="outlined">
+                      <TextField
+                        id="outlined-secondary"
+                        label="comment"
+                        variant="outlined"
+                        color="primary"
+                        value={''}
+                        onChange={''}
+                      />
+                    </FormControl>
                     <Button
                       variant="contained"
                       color="primary"
@@ -270,9 +201,9 @@ const ContactList = ({ contacts, getContacts, search, Auth }) => {
 };
 
 export default connect(
-  ({ contacts, comments, Auth }) => ({
-    contacts,
-    comments,
+  ({ Contacts, Comments, Auth }) => ({
+    Contacts,
+    Comments,
     Auth,
   }),
   {

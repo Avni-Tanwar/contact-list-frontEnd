@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -78,11 +77,9 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = ({ Auth, handleSearch }) => {
   const classes = useStyles();
   const [loggedIn, setLoggedIn] = useState(false);
-  console.log('Navbar Auth value', Auth);
 
   useEffect(() => {
     if (Auth.value?.data?.id) {
-      console.log('profile id', Auth.value.data.id);
       setLoggedIn(true);
     }
   }, [Auth]);
