@@ -10,9 +10,13 @@ import * as actions from '../../Redux/Actions/Auth';
 const Redirect = ({ location, Auth, getLoginTokens, getNewToken }) => {
   useEffect(() => {
     const code = location.search.substring(1).split('&')[0];
-    getLoginTokens(code.substring(5))
-    const id = Auth.value.data.id;
-    const uuid = Auth.value.data.uuid;
+    console.log('code:', code);
+    if(code){
+      getLoginTokens(code.substring(5))
+    }
+    const id = Auth?.value?.data?.id;
+    const uuid = Auth?.value?.data?.uuid;
+    console.log('uuid:', id, uuid)
     if(id) {
       getNewToken(uuid);
     }

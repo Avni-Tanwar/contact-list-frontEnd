@@ -1,4 +1,6 @@
-import { GET_CONTACTS, SET_CONTACTS, SET_IS_LOADING } from '../Constants/Contacts';
+import {
+  GET_CONTACTS, SET_CONTACTS, SET_IS_LOADING, CLEAR_STORE
+} from '../Constants/Contacts';
 
 export const setContacts = (value) => ({
   type: SET_CONTACTS,
@@ -14,3 +16,7 @@ export const setIsLoading = (value) => ({
   type: SET_IS_LOADING,
   value,
 });
+
+export const removeContacts = () => ({
+  type: CLEAR_STORE,
+})

@@ -1,16 +1,16 @@
 /* eslint-disable no-console */
 import {
-  SET_CONTACTS, SET_IS_LOADING, CLEAR_STORE
-} from '../Constants/Contacts';
+  SET_COMMENTS, SET_IS_LOADING, CLEAR_STORE
+} from '../Constants/Comments';
 
 const initialState = {
-  contacts: {},
+  comments: {},
 };
 
-const Contacts = (state = initialState.contacts, { type, value }) => {
+const Comments = (state = initialState.comments, { type, value }) => {
   console.log('Type and value', type, value);
   switch (type) {
-    case SET_CONTACTS:
+    case SET_COMMENTS:
       return { ...state, ...value };
     
     case SET_IS_LOADING:
@@ -24,4 +24,4 @@ const Contacts = (state = initialState.contacts, { type, value }) => {
   }
 };
 
-export default Contacts;
+export default Comments;

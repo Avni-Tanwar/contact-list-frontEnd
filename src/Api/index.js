@@ -12,24 +12,36 @@ export async function getLoginTokensApi(payload) {
   return data;
 }
 
-export function getNewTokensApi(value) {
-  const data = axios.post('http://localhost:3001/users/newtoken', {
+export async function getNewTokenApi(value) {
+  const data = await axios.post('http://localhost:3001/users/newtoken', {
     uuid: value.uuid,
     id: value.id
   });
+  console.log('data:', data)
   return data;
 }
 
-export function getContactsApi(value) {
-  console.log('fetching data');
+export async function getContactsApi(value) {
   let config = {
     headers: {
       'Authorization': 'Bearer ' + value.token
     }
   }
-  const data = axios.post('http://localhost:3001/contacts', {
+  const data = await axios.post('http://localhost:3001/contacts', {
     uuid: value.uuid,
     page: value.page
+  }, config );
+  return data;
+}
+
+export async function getCommentsApi(value) {
+  let config = {
+    headers: {
+      'Authorization': 'Bearer ' + value.token
+    }
+  }
+  const data = await axios.post('http://localhost:3001/comments', {
+    id: value.id,
   }, config );
   return data;
 }

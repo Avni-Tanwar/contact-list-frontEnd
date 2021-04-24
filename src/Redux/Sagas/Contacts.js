@@ -5,18 +5,19 @@ import { toast } from 'react-toastify';
 import {
   GET_CONTACTS,
 } from '../Constants/Contacts';
-import { setContacts } from '../Actions/Contacts';
+import { setContacts, setIsLoading } from '../Actions/Contacts';
 import { getContactsApi } from '../../Api';
 
-export function* getContactsList() {
+export function* getContactsList(value) {
+  yield put(setIsLoading(true));
   try {
-    console.log('inside contacts sagas');
-    const response = yield call(getContactsApi);
+    const response = yield call(getContactsApi, value);
     yield put(setContacts(response));
   } catch (error) {
     console.log('error');
-    yield toast.error('Data Fetch Error');
+    yield toast.error('Contacts Fetch Error');
   }
+  yield put(setIsLoading(false));
 }
 
 export function* watchContactsApi() {

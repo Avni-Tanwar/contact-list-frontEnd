@@ -1,5 +1,5 @@
 import {
-  GET_ACCOUNTS_API, LOGOUT, GET_LOGIN_TOKEN, SET_AUTH, LOGIN_SUCCESS, LOGIN_FAIL, GET_NEW_TOKEN, SET_TOKEN
+  GET_ACCOUNTS_API, LOGOUT, GET_LOGIN_TOKEN, SET_ACCOUNTS, LOGIN_SUCCESS, LOGIN_FAIL, GET_NEW_TOKEN, SET_REFRESH_TOKEN
 } from '../Constants/Auth';
 
 export const getLoginTokens = (value) => ({
@@ -7,9 +7,18 @@ export const getLoginTokens = (value) => ({
   value
 });
 
+export const getAccounts = () => ({
+  type: GET_ACCOUNTS_API,
+});
+
 export const getNewToken = (value) => ({
   type: GET_NEW_TOKEN,
   value
+});
+
+export const setAccounts = (value) => ({
+  type: SET_ACCOUNTS,
+  value,
 });
 
 export const setProfile = (value) => ({
@@ -18,21 +27,12 @@ export const setProfile = (value) => ({
 });
 
 export const setToken = (value) => ({
-  type: SET_TOKEN,
+  type: SET_REFRESH_TOKEN,
   value,
 });
 
 export const setError = (value) => ({
   type: LOGIN_FAIL,
-  value,
-});
-
-export const getAccounts = () => ({
-  type: GET_ACCOUNTS_API,
-});
-
-export const setAuth = (value) => ({
-  type: SET_AUTH,
   value,
 });
 
