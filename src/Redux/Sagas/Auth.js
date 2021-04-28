@@ -38,9 +38,9 @@ export function* getNewToken(value) {
   }
 }
 
-export function* logoutApi(value) {
+export function* logoutApi() {
   try {
-    const response = yield call(logoutUserApi, value );
+    const response = yield call(logoutUserApi);
     console.log('logout',response);
     yield put(clearStore);
     yield put (removeContacts);

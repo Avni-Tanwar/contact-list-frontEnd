@@ -41,25 +41,32 @@ const useStyles = makeStyles({
   },
 });
 
-const ContactList = ({ Contacts, getContacts, search, Auth, Comments, getComments }) => {
+const ContactList = ({ Contacts, getContacts, search, Auth, Comments, deleteComments, createComments, getComments }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showComments, setShowComments] = useState(false);
+  const [addComment, setAddComment] = useState('');
+  const [contactId, setContactId] = useState(null);
+  const [commentId, setCommentId] = useState(null);
+  const [editComment, setEditComment] = useState(false);
   
-
   useEffect(() => {
-    const uuid = Auth?.value?.data?.uuid;
+    console.log("useffect", Auth);
+    // const uuid = Auth?.value?.data?.uuid;
     const token = Auth?.value?.data?.token;
-    const page = 1;
-    getContacts({ uuid: uuid, page: page, token: token });
+    // const page = 1;
+    getContacts({ token });
     setIsLoading(Contacts?.loading);
-    
+
   }, [Auth]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    console.log(newPage)
+    const token = Auth?.value?.data?.token;
+    getContacts({ token, contactId, newPage });
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -67,16 +74,41 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, getComment
     setPage(0);
   };
 
-  const handleComment = (event) => {
+  const handleCommentChange = (event) => {
+    setAddComment(event.target.value);
+  }
+
+  const handleCommentSubmit = (event) => {
+    const token = Auth?.value?.data?.token;
+    console.log("ContactID: ", contactId);
+    createComments({ token, comment: addComment, contactId })
+  }
+
+  const handleComment = () => {
     setShowComments(true);
-    //const token = Auth?.value?.data?.token;
+    const token = Auth?.value?.data?.token;
     // call comments api
-    // getComments({ token: token });
+    getComments({ token, contactId });
     // display comments when loaded in modal 
   };
 
+  const handleCommentDelete = () => {
+    console.log(commentId);
+    const token = Auth?.value?.data?.token;
+    deleteComments({ token, commentId })
+  }
+
+  const handleCommentEdit = () => {
+    console.log(commentId);
+    setEditComment(true);
+  }
+  const handleCommentEditSubmit = () => {
+    console.log(commentId);
+  }
+
   const handleClose = () => {
     setShowComments(false);
+    setEditComment(false);
   };
 
   const contactsList = Contacts?.data;
@@ -105,7 +137,7 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, getComment
       </TableCell>
       <TableCell scope="row" align="justify">
         <Typography style={{ display: 'inline-block' }} color="textSecondary">
-          {result.accid}
+          {result.cid}
         </Typography>
       </TableCell>
       <TableCell scope="row" align="justify">
@@ -114,7 +146,12 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, getComment
           color="primary"
           size="small"
           className={classes.button}
-          onClick={() => { handleComment(); }}
+          onClick={() => {
+            console.log(result.cid);
+            setContactId(result.cid);
+            console.log(contactId);
+            handleComment();
+          }}
         >
           Comment
         </Button>
@@ -122,37 +159,85 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, getComment
     </TableRow>
   ));
 
+  const commentList = Comments?.data;
+  let commentItems = commentList?.map((result, index) => (
+    <p>
+      { editComment ? <>
+        <TextField
+          key={index}
+          id="outlined-secondary"
+          label="comment"
+          variant="outlined"
+          color="primary"
+          value={result.comment}
+        />
+        <Button
+          variant="contained"
+          color=""
+          size="small"
+          value="EDIT"
+          onClick={() => {
+            setCommentId(result.cmid);
+            handleCommentEditSubmit();
+          }}>SUBMIT</Button>
+      </>
+        :
+        <>
+          {result.comment}
+          <Button
+            variant="contained"
+            color=""
+            size="small"
+            value="EDIT"
+            onClick={() => {
+              setCommentId(result.cmid);
+              handleCommentEdit();
+            }}>EDIT</Button>
+        </>
+      }
+      <Button
+        variant="contained"
+        color="secondary"
+        size="small"
+        onClick={() => {
+          setCommentId(result.cmid);
+          handleCommentDelete();
+        }}> DELETE </Button>
+    </p>
+  ));
+  // let commentItems;
+
   return (
     <>
       { isLoading
         ? <div><CircularProgress /></div>
         : <><Paper className={classes.root}>
-            <TableContainer className={classes.container}>
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead style={{ display: 'table-header-group' }}>
-                  <TableRow>
-                    <TableCell align="justify" style={{ minWidth: '50px' }}>Name</TableCell>
-                    <TableCell align="justify" style={{ minWidth: '50px' }}>Email</TableCell>
-                    <TableCell align="justify" style={{ minWidth: '50px' }}>Phone Number</TableCell>
-                    <TableCell align="justify" style={{ minWidth: '50px' }}>Account ID</TableCell>
-                    <TableCell align="justify" style={{ minWidth: '50px' }}> </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {items}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[10, 15, 25, 100]}
-              component="div"
-              count={contactsList?.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-            />
-          </Paper>
+          <TableContainer className={classes.container}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead style={{ display: 'table-header-group' }}>
+                <TableRow>
+                  <TableCell align="justify" style={{ minWidth: '50px' }}>Name</TableCell>
+                  <TableCell align="justify" style={{ minWidth: '50px' }}>Email</TableCell>
+                  <TableCell align="justify" style={{ minWidth: '50px' }}>Phone Number</TableCell>
+                  <TableCell align="justify" style={{ minWidth: '50px' }}>Contact ID</TableCell>
+                  <TableCell align="justify" style={{ minWidth: '50px' }}> </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {items}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 15, 25, 100]}
+            component="div"
+            count={contactsList?.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
           <div>
             {showComments && (
               <Modal
@@ -168,16 +253,17 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, getComment
                 }}
               >
                 <Fade in={showComments}>
-                  <div className={classes.paper} style={{ margin:"20px" }}>
-                    <h2 id="transition-modal-title">showing list of comments</h2>
+                  <div className={classes.paper} style={{ margin: "20px", background: 'white' }}>
+                    <h2 id="transition-modal-title">Showing list of comments</h2>
+                    {commentItems}
                     <FormControl variant="outlined">
                       <TextField
                         id="outlined-secondary"
                         label="comment"
                         variant="outlined"
                         color="primary"
-                        value={''}
-                        onChange={''}
+                        value={addComment}
+                        onChange={handleCommentChange}
                       />
                     </FormControl>
                     <Button
@@ -185,7 +271,7 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, getComment
                       color="primary"
                       size="small"
                       className={classes.button}
-                      onClick={() => { handleComment(); }}
+                      onClick={() => { handleCommentSubmit(); setAddComment('') }}
                     >
                       Add Comment
                     </Button>
@@ -194,7 +280,7 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, getComment
               </Modal>
             )}
           </div>
-        </>  
+        </>
       }
     </>
   );
@@ -209,5 +295,7 @@ export default connect(
   {
     getContacts: ContactActions.getContacts,
     getComments: CommentActions.getComments,
+    createComments: CommentActions.createComments,
+    deleteComments: CommentActions.deleteComments,
   },
 )(ContactList);

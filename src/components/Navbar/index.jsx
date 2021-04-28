@@ -81,6 +81,8 @@ const Navbar = ({ Auth, handleSearch }) => {
   useEffect(() => {
     if (Auth.value?.data?.id) {
       setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
     }
   }, [Auth]);
 
@@ -121,7 +123,7 @@ const Navbar = ({ Auth, handleSearch }) => {
               edge="end"
               color="default"
             >
-              {loggedIn ? <Link to="/logout" style={{ color: 'white' }}>Logout </Link> : <Link to="/login" style={{ color: 'white' }}>Login </Link> }
+              {loggedIn ? <Link to="/logout" style={{ color: 'white' }}>Logout </Link> : <Link to="/login" style={{ color: 'white' }}>Login </Link>}
             </IconButton>
           </div>
           <div className={classes.sectionDesktop} style={{ margin: '20px' }}>
