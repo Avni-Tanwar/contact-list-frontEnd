@@ -13,6 +13,7 @@ export function* getContactsList(value) {
   try {
     const response = yield call(getContactsApi, value);
     yield put(setContacts(response.data));
+    console.log("CONTACTS",response);
   } catch (error) {
     console.log('error');
     yield toast.error('Contacts Fetch Error');
