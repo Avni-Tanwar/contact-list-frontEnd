@@ -41,7 +41,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ContactList = ({ Contacts, getContacts, search, Auth, Comments, deleteComments, createComments, getComments }) => {
+const ContactList = ({ Contacts, getContacts, search, Auth, Comments, editComments, deleteComments, createComments, getComments }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -50,8 +50,8 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, deleteComm
   const [addComment, setAddComment] = useState('');
   const [contactId, setContactId] = useState(null);
   const [commentId, setCommentId] = useState(null);
-  const [editComment, setEditComment] = useState(false);
-  
+  const [editComment, setEditComment] = useState('');
+
   useEffect(() => {
     console.log("useffect", Auth);
     // const uuid = Auth?.value?.data?.uuid;
@@ -78,37 +78,48 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, deleteComm
     setAddComment(event.target.value);
   }
 
-  const handleCommentSubmit = (event) => {
+  const handleCommentSubmit = () => {
     const token = Auth?.value?.data?.token;
-    console.log("ContactID: ", contactId);
     createComments({ token, comment: addComment, contactId })
+    handleClose();
   }
 
-  const handleComment = () => {
+  const handleComment = (cid) => {
     setShowComments(true);
     const token = Auth?.value?.data?.token;
-    // call comments api
-    getComments({ token, contactId });
-    // display comments when loaded in modal 
+    getComments({ token, contactId: cid });
   };
 
-  const handleCommentDelete = () => {
+  const handleCommentDelete = (cmid) => {
     console.log(commentId);
     const token = Auth?.value?.data?.token;
-    deleteComments({ token, commentId })
+    deleteComments({ token, commentId: cmid })
+    handleClose();
   }
 
-  const handleCommentEdit = () => {
+  const handleCommentEdit = (comment, cmid) => {
     console.log(commentId);
-    setEditComment(true);
+    setCommentId(cmid);
+    setEditComment(comment);
   }
-  const handleCommentEditSubmit = () => {
+
+  const handleEditCommentChange = (event) => {
+    console.log(editComment);
+    setEditComment(event.target.value);
+  }
+
+  const handleCommentEditSubmit = (cmid) => {
+    const token = Auth?.value?.data?.token;
+    editComments({ token, comment: editComment, commentId: cmid });
     console.log(commentId);
+    handleClose();
   }
 
   const handleClose = () => {
     setShowComments(false);
-    setEditComment(false);
+    setCommentId(null);
+    setAddComment('');
+    setEditComment('');
   };
 
   const contactsList = Contacts?.data;
@@ -119,7 +130,7 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, deleteComm
     }
     return result?.name?.toLowerCase().includes(search.toLowerCase()) || result?.email?.toLowerCase().includes(search.toLowerCase()) || result?.phone?.includes(search);
   }).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((result) => (
-    <TableRow hover role="checkbox" tabIndex={-1}>
+    <TableRow hover role="checkbox" tabIndex={-1} key={result.cid}>
       <TableCell scope="row" align="justify">
         <Typography style={{ display: 'inline-block' }} color="textSecondary">
           {result.name}
@@ -136,21 +147,14 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, deleteComm
         </Typography>
       </TableCell>
       <TableCell scope="row" align="justify">
-        <Typography style={{ display: 'inline-block' }} color="textSecondary">
-          {result.cid}
-        </Typography>
-      </TableCell>
-      <TableCell scope="row" align="justify">
         <Button
           variant="contained"
           color="primary"
           size="small"
           className={classes.button}
           onClick={() => {
-            console.log(result.cid);
             setContactId(result.cid);
-            console.log(contactId);
-            handleComment();
+            handleComment(result.cid);
           }}
         >
           Comment
@@ -160,50 +164,71 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, deleteComm
   ));
 
   const commentList = Comments?.data;
-  let commentItems = commentList?.map((result, index) => (
-    <p>
-      { editComment ? <>
-        <TextField
-          key={index}
-          id="outlined-secondary"
-          label="comment"
-          variant="outlined"
-          color="primary"
-          value={result.comment}
-        />
-        <Button
-          variant="contained"
-          color=""
-          size="small"
-          value="EDIT"
-          onClick={() => {
-            setCommentId(result.cmid);
-            handleCommentEditSubmit();
-          }}>SUBMIT</Button>
-      </>
-        :
-        <>
-          {result.comment}
+  let commentItems = commentList?.map((result) => (
+    <TableRow hover role="checkbox" tabIndex={-1}>
+      {
+        commentId === result.cmid ? <>
+
+          <TableCell scope="row" align="justify">
+            <Typography style={{ display: 'inline-block' }} color="textSecondary">
+              <TextField
+                key={result.cmid}
+                id="outlined-secondary"
+                label="comment"
+                variant="outlined"
+                color="primary"
+                value={editComment}
+                onChange={handleEditCommentChange}
+              />
+            </Typography>
+          </TableCell>
+          <TableCell scope="row" align="justify">
+            <Typography style={{ display: 'inline-block' }} color="textSecondary">
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                value="EDIT"
+                onClick={() => {
+                  handleCommentEditSubmit(result.cmid);
+                }}>SUBMIT</Button>
+            </Typography>
+          </TableCell>
+        </>
+          :
+          <>
+            <TableCell scope="row" align="justify">
+              <Typography style={{ display: 'inline-block' }} color="textSecondary">
+                {result.comment}
+              </Typography></TableCell>
+
+            <TableCell scope="row" align="justify">
+              <Typography style={{ display: 'inline-block' }} color="textSecondary">
+                <Button
+                  variant="contained"
+                  color=""
+                  size="small"
+                  value="EDIT"
+                  onClick={() => {
+                    handleCommentEdit(result.comment, result.cmid);
+                  }}>EDIT</Button>
+              </Typography>
+            </TableCell>
+          </>
+      }
+      <TableCell scope="row" align="justify">
+        <Typography style={{ display: 'inline-block' }} color="textSecondary">
           <Button
             variant="contained"
-            color=""
+            color="secondary"
             size="small"
-            value="EDIT"
             onClick={() => {
-              setCommentId(result.cmid);
-              handleCommentEdit();
-            }}>EDIT</Button>
-        </>
-      }
-      <Button
-        variant="contained"
-        color="secondary"
-        size="small"
-        onClick={() => {
-          setCommentId(result.cmid);
-          handleCommentDelete();
-        }}> DELETE </Button>
-    </p>
+              handleCommentDelete(result.cmid);
+            }}> DELETE </Button>
+        </Typography>
+      </TableCell>
+      <br /><br />
+    </TableRow>
   ));
   // let commentItems;
 
@@ -216,11 +241,10 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, deleteComm
             <Table stickyHeader aria-label="sticky table">
               <TableHead style={{ display: 'table-header-group' }}>
                 <TableRow>
-                  <TableCell align="justify" style={{ minWidth: '50px' }}>Name</TableCell>
-                  <TableCell align="justify" style={{ minWidth: '50px' }}>Email</TableCell>
-                  <TableCell align="justify" style={{ minWidth: '50px' }}>Phone Number</TableCell>
-                  <TableCell align="justify" style={{ minWidth: '50px' }}>Contact ID</TableCell>
-                  <TableCell align="justify" style={{ minWidth: '50px' }}> </TableCell>
+                  <TableCell align="justify" style={{ minWidth: '75px' }}>Name</TableCell>
+                  <TableCell align="justify" style={{ minWidth: '75px' }}>Email</TableCell>
+                  <TableCell align="justify" style={{ minWidth: '75px' }}>Phone Number</TableCell>
+                  <TableCell align="justify" style={{ minWidth: '50px' }}> Comment </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -255,26 +279,52 @@ const ContactList = ({ Contacts, getContacts, search, Auth, Comments, deleteComm
                 <Fade in={showComments}>
                   <div className={classes.paper} style={{ margin: "20px", background: 'white' }}>
                     <h2 id="transition-modal-title">Showing list of comments</h2>
-                    {commentItems}
-                    <FormControl variant="outlined">
-                      <TextField
-                        id="outlined-secondary"
-                        label="comment"
-                        variant="outlined"
-                        color="primary"
-                        value={addComment}
-                        onChange={handleCommentChange}
-                      />
-                    </FormControl>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      className={classes.button}
-                      onClick={() => { handleCommentSubmit(); setAddComment('') }}
-                    >
-                      Add Comment
-                    </Button>
+
+                    <TableContainer className={classes.container}>
+                      <Table stickyHeader aria-label="sticky table">
+                        <TableHead style={{ display: 'table-header-group' }}>
+                          <TableRow>
+                            <TableCell align="justify" style={{ minWidth: '50px' }}>Comment</TableCell>
+                            <TableCell align="justify" style={{ minWidth: '50px' }}>MODIFY</TableCell>
+                            <TableCell align="justify" style={{ minWidth: '50px' }}>DELETE</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {commentItems}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+
+                    <TableRow hover role="checkbox" tabIndex={-1}>
+                      <TableCell scope="row" align="justify">
+                        <Typography style={{ display: 'inline-block' }} color="textSecondary">
+                          <FormControl variant="outlined">
+                            <TextField
+                              id="outlined-secondary"
+                              label="comment"
+                              variant="outlined"
+                              color="primary"
+                              value={addComment}
+                              onChange={handleCommentChange}
+                            />
+                          </FormControl>
+                        </Typography>
+                      </TableCell>
+                      <TableCell scope="row" align="justify">
+                        <Typography style={{ display: 'inline-block' }} color="textSecondary">
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            className={classes.button}
+                            onClick={() => { handleCommentSubmit(); setAddComment('') }}
+                          >
+                            Add Comment
+                          </Button>
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
                   </div>
                 </Fade>
               </Modal>
@@ -297,5 +347,6 @@ export default connect(
     getComments: CommentActions.getComments,
     createComments: CommentActions.createComments,
     deleteComments: CommentActions.deleteComments,
+    editComments: CommentActions.editComments,
   },
 )(ContactList);

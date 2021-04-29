@@ -8,6 +8,7 @@ export function getAccountsApi() {
 export async function getLoginTokensApi(payload) {
   const body = { code: payload.value, type: 'people' }
   const data = await axios.post('http://localhost:3001/users/logintokens', body);
+  // localStorage.setItem('itemName', )
   return data;
 }
 
@@ -60,6 +61,19 @@ export async function createCommentsApi(payload) {
   const url = `http://localhost:3001/comments/${payload.value.contactId}`;
   const data = await axios.post(url, { comment: payload.value.comment }, config);
   console.log('Create_COMMENT_DATA:', data)
+  return data;
+}
+
+export async function editCommentsApi(payload) {
+  console.log("EDIT_COMMENT_API_PAYLOAD: ", payload);
+  let config = {
+    headers: {
+      'Authorization': 'Bearer ' + payload.value.token
+    }
+  }
+  const url = `http://localhost:3001/comments/${payload.value.commentId}`;
+  const data = await axios.put(url, { comment: payload.value.comment }, config);
+  console.log('EDITED_COMMENT_DATA:', data)
   return data;
 }
 

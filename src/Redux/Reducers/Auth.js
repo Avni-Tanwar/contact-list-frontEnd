@@ -7,18 +7,24 @@ const initialState = {
   Auth: {},
 };
 
-const Auth = (state = initialState.Auth, { type, value }) => {
+const Auth = (state = initialState, { type, value }) => {
   console.log('Type and value', type, value);
   switch (type) {
     case SET_ACCOUNTS:
       return value;
 
     case SET_REFRESH_TOKEN:
-        return {...state, value};
-  
+      return {
+        ...state,
+        value
+      };
+
 
     case LOGIN_SUCCESS:
-      return {...state, value};
+      return {
+        ...state,
+        value
+      };
 
     case LOGIN_FAIL:
       return 'Login failed';

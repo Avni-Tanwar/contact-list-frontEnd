@@ -1,11 +1,17 @@
 import {
-  GET_COMMENTS, SET_COMMENTS, CREATE_COMMENTS, DELETE_COMMENTS, SET_IS_LOADING, CLEAR_STORE
+  GET_COMMENTS, SET_COMMENTS, ADD_COMMENT, CREATE_COMMENTS, EDIT_COMMENTS, DELETE_COMMENTS, SET_IS_LOADING, CLEAR_STORE
 } from '../Constants/Comments';
 
 export const setComments = (value) => ({
   type: SET_COMMENTS,
   value,
 });
+
+export const addComment = (value) => ({
+  type: ADD_COMMENT,
+  value,
+});
+
 
 export const getComments = (value) => ({
   type: GET_COMMENTS,
@@ -14,6 +20,12 @@ export const getComments = (value) => ({
 
 export const createComments = (value) => ({
   type: CREATE_COMMENTS,
+  value,
+});
+
+
+export const editComments = (value) => ({
+  type: EDIT_COMMENTS,
   value,
 });
 

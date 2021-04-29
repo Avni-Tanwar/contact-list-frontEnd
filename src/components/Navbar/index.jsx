@@ -77,9 +77,8 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = ({ Auth, handleSearch }) => {
   const classes = useStyles();
   const [loggedIn, setLoggedIn] = useState(false);
-
   useEffect(() => {
-    if (Auth.value?.data?.id) {
+    if (Auth?.value?.data?.id) {
       setLoggedIn(true);
     } else {
       setLoggedIn(false);

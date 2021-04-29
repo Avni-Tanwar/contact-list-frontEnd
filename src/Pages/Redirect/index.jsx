@@ -6,28 +6,18 @@ import { connect } from 'react-redux';
 import * as actions from '../../Redux/Actions/Auth';
 
 const MiddleWare = ({ location, Auth, getLoginTokens, getNewToken }) => {
-
   useEffect(() => {
+    // localStorage.getItem('accessToken', );
     const code = location.search.substring(1).split('&')[0];
-    if(code){
-      getLoginTokens(code.substring(5))
+    if (code) {
+      getLoginTokens(code.substring(5));
     }
   }, []);
-   
-  useEffect(() => {
-    // BE error calling api
-    /* const id = Auth?.value?.data?.id;
-    const uuid = Auth?.value?.data?.uuid;
-    console.log('uuid:', id, uuid)
-    if(id) {
-      getNewToken(uuid);
-    } */
-  }, [Auth]);
 
   return (
-  <>
-    <Redirect to='/contact-list' />
-  </>
+    <>
+       <Redirect to='/contact-list' />
+    </>
   );
 };
 

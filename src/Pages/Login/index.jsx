@@ -38,7 +38,7 @@ const Login = ({ Auth, getAccounts }) => {
   const handleChooseAccount = () => {
     window.location.replace(Auth.data)
   };
-
+  
   useEffect(() => {
     getAccounts();
   }, []);

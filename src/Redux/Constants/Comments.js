@@ -1,5 +1,7 @@
 export const GET_COMMENTS = 'GET_COMMENTS';
 export const CREATE_COMMENTS = 'CREATE_COMMENTS';
+export const EDIT_COMMENTS = 'EDIT_COMMENTS';
+export const ADD_COMMENT = 'ADD_COMMENT';
 export const SET_COMMENTS = 'SET_COMMENTS';
 export const DELETE_COMMENTS = 'DELETE_COMMENTS';
 export const SET_IS_LOADING = 'SET_IS_LOADING';
